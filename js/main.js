@@ -83,9 +83,9 @@ function initialData() {
 
 // Initialize Firebase
 var config = {
-  apiKey: "AIzaSyCKV-7rSTj_oCjcmieX6QwYcUDo3J7eElA",
-  authDomain: "ticklist-fce5a.firebaseapp.com",
-  databaseURL: "https://ticklist-fce5a.firebaseio.com",
+  apiKey: "AIzaSyC2nJvO4tzuUlfajYXEgKkh8j9Ofn-9j2c",
+    authDomain: "peaklist-fork.firebaseapp.com",
+    databaseURL: "https://peaklist-fork.firebaseio.com",
   storageBucket: "",
 }
 
@@ -160,7 +160,9 @@ var app = new Vue({
     changeClimbType(e, type) {
       e.preventDefault()
       app.climbType = type
-
+      
+      
+		
       firebase.database().ref("users/" + app.userId + "/" + type).once('value', function(snapshot) {
         var v = snapshot.val()
         app.gradingSystem = v.gradingSystem

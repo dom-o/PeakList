@@ -107,8 +107,8 @@
       </p>
       <div class="nav-bar">
         <a v-on:click="changeClimbType($event, 'route')"
-        class="btn" href="#">Route</a>
-        <a v-on:click="changeClimbType($event, 'boulder')" class="btn" href="#">Boulder</a>
+        class="btn" v-bind:class="{ 'active':(climbType === 'route') }" href="#">Route</a>
+        <a v-on:click="changeClimbType($event, 'boulder')" class="btn" v-bind:class="{ 'active':(climbType === 'boulder') }" href="#">Boulder</a>
         <a v-on:click="logout($event)" class="btn logout" href="#">Logout</a>
       </div>
       <form id="sendRecorder" class="grid-form">
