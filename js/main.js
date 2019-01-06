@@ -78,6 +78,8 @@ function initialData() {
     climbType: "route",
     routeOnsight: null,
     boulderOnsight: null,
+    dateFormat: 'MM/DD/YYYY',
+    errors: [],
   }
 }
 
@@ -452,11 +454,20 @@ var app = new Vue({
           obj[item.name] = item.value
           return obj
         }, {})
-
-      this.db.insert(data)
-      app.doBackup()
-      $('#sendRecorder')[0].reset()
-    }
+        
+      this.errors = []
+      dataDate = data['dateSent']
+      if(dataDate === '' || moment(dataDate, this.dateFormat, true).isValid()) {
+		  this.db.insert(data)
+		  app.doBackup()
+		  $('#sendRecorder')[0].reset()
+	  } else {
+		  this.errors.push("Something's wrong with your date. It's gotta be in "+this.dateFormat + " form.")
+	  }
+    },
+    setToToday: function(target) {
+		$(target).val(moment().format(this.dateFormat))
+	},
   }
 })
 

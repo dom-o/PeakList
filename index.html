@@ -114,10 +114,15 @@
       <form id="sendRecorder" class="grid-form">
         <fieldset>
           <legend>Send a {{climbType}}</legend>
-          <div data-row-span="1">
-            <div data-field-span="1">
+          <div data-row-span="3">
+            <div data-field-span="2">
               <label for="routeName">Route name</label>
               <input name="routeName" id="routeName" type="text">
+            </div>
+            <div data-field-span="1">
+				<label for="dateSent">Date sent ({{ dateFormat }})</label>
+				<input name="dateSent" id="dateSent" type="text">
+				<button type="button" v-on:click="setToToday('#dateSent')">Today</button>
             </div>
           </div>
           <div data-row-span="4">
@@ -228,6 +233,12 @@
             </div>
           </div>
         </fieldset>
+        <p v-if="errors.length">
+    <b>Please correct the following error(s):</b>
+    <ul>
+      <li v-for="error in errors">{{ error }}</li>
+    </ul>
+  </p>
         <button v-on:click="recordSend">Record</button>
       </form>
       <p class="mid title">ROUTE PYRAMID</p>
@@ -319,6 +330,7 @@
   <script type="text/javascript" src="js/libs/lodash.js/4.14.0/lodash.min.js"></script>
   <script type="text/javascript" src="js/libs/taffydb/2.7.2/taffy-min.js"></script>
   <script type="text/javascript" src="js/libs/vue/1.0.26/vue.min.js"></script>
+  <script type="text/javascript" src="js/libs/moment.js/2.23.0/moment.min.js"></script>
   <script type="text/javascript" src="js/service-worker-registration.js"></script>
   <script type="text/javascript" src="js/main.js"></script>
 </body>
