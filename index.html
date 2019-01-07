@@ -114,18 +114,13 @@
       <form id="sendRecorder" class="grid-form">
         <fieldset>
           <legend>Send a {{climbType}}</legend>
-          <div data-row-span="3">
-            <div data-field-span="2">
+          <div data-row-span="1">
+            <div data-field-span="1">
               <label for="routeName">Route name</label>
               <input name="routeName" id="routeName" type="text">
             </div>
-            <div data-field-span="1">
-				<label for="dateSent">Date sent ({{ dateFormat }})</label>
-				<input name="dateSent" id="dateSent" type="text">
-				<button type="button" v-on:click="setToToday('#dateSent')">Today</button>
-            </div>
           </div>
-          <div data-row-span="4">
+          <div :data-row-span="((climbType==='route') ? 4 : 3)">
             <div data-field-span="1">
               <label for="grade">Grade</label>
               <select name="grade" id="grade">
@@ -133,9 +128,9 @@
               </select>
             </div>
             <div data-field-span="1">
-              <label for="routeWork">Route work</label>
+              <label for="routeWork">Number of attempts</label>
               <select name="routeWork" id="routeWork">
-                <option v-for="work in routeWorks" value="{{work.id}}">{{work.displayName}}</option>
+                <option v-for="work in ((climbType==='route') ? routeWorkRoute : routeWorkBoulder)" value="{{work.id}}">{{work.displayName}}</option>
               </select>
             </div>
             <div data-field-span="1">
@@ -145,7 +140,7 @@
                 <option value="outdoor">Outdoor</option>
               </select>
             </div>
-            <div data-field-span="1">
+            <div v-if="climbType==='route'" data-field-span="1">
               <label for="topRopeOrLead">Top rope or lead</label>
               <select name="topRopeOrLead" id="topRopeOrLead">
                 <option value="toprope">Top rope</option>
@@ -156,6 +151,13 @@
         </fieldset>
         <fieldset>
           <legend>Optional route data</legend>
+          <div data-row-span="1">
+			<div data-field-span="1">
+				<label for="dateSent">Date sent ({{ dateFormat }})</label>
+				<input name="dateSent" id="dateSent" type="text">
+				<button type="button" v-on:click="setToToday('#dateSent')">Today</button>
+			</div>
+          </div>
           <div data-row-span="4">
             <div data-field-span="1">
               <label for="holdType">Prominent hold type</label>
@@ -233,12 +235,12 @@
             </div>
           </div>
         </fieldset>
-        <p v-if="errors.length">
-    <b>Please correct the following error(s):</b>
-    <ul>
-      <li v-for="error in errors">{{ error }}</li>
-    </ul>
-  </p>
+		<p v-if="errors.length">
+			<b>Please correct the following error(s):</b>
+			<ul>
+				<li v-for="error in errors">{{ error }}</li>
+			</ul>
+		</p>
         <button v-on:click="recordSend">Record</button>
       </form>
       <p class="mid title">ROUTE PYRAMID</p>

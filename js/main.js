@@ -125,13 +125,22 @@ var app = new Vue({
         {id: "undercling", statName: "UNDR", displayName: "Undercling", color: "#000"}
       ]
     },
-    routeWorks: function() {
-      return [
-        {id: "redpoint", statName: "REDP", displayName: "Redpoint", color: "#aa231f"},
+    routeWorkRoute: function() {
+      return [        
+		{id: "onsight", statName: "ONST", displayName: "On-sight", color: "#0face1"},
         {id: "flash", statName: "FLSH", displayName: "Flash", color: "#e3cb29"},
-        {id: "onsight", statName: "ONST", displayName: "On-sight", color: "#0face1"}
+        {id: "2nd", statName: "2ND", displayName: "2nd try", color: "#aa231f"},
+		{id: "3+", statName: ">3", displayName: "More than 3 tries", color: "#fcea24"},
       ]
     },
+    routeWorkBoulder: function() {
+		return [
+			{id: "flash", statName: "FLSH", displayName: "Flash", color: "#0face1"},
+			{id: "2nd", statName: "2ND", displayName: "2nd try", color: "#e3cb29"},
+			{id: "3rd", statName: "3RD", displayName: "3rd try", color: "#aa231f"},
+			{id: ">3", statName: ">3", displayName: "More than 3 tries", color: "#fcea24"},
+		]
+	},
     filterableGrades: function() {
       return this.db().distinct("grade").sort()
     },
