@@ -106,8 +106,7 @@
         <span v-if="!isConnected" class="offline">offline</span>
       </p>
       <div class="nav-bar">
-        <a v-on:click="changeClimbType($event, 'route')"
-        class="btn" v-bind:class="{ 'active':(climbType === 'route') }" href="#">Route</a>
+        <a v-on:click="changeClimbType($event, 'route')" class="btn" v-bind:class="{ 'active':(climbType === 'route') }" href="#">Route</a>
         <a v-on:click="changeClimbType($event, 'boulder')" class="btn" v-bind:class="{ 'active':(climbType === 'boulder') }" href="#">Boulder</a>
         <a v-on:click="logout($event)" class="btn logout" href="#">Logout</a>
       </div>
@@ -290,6 +289,13 @@
                   <option value="">All grades</option>
                   <option v-for="grade in filterableGrades" value="{{grade}}">{{grade}}</option>
                 </select>
+              </div>
+              <div data-field-span="1">
+				  <label for="dateStatSelector">Select a date</label>
+				  <select id="dateStatSelector">
+					  <option value="">All dates</option>
+					  <option v-for="date in filterableDates" value="{{date}}">{{date}}</option>
+				  </select>
               </div>
             </div>
           </fieldset>
