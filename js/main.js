@@ -75,7 +75,7 @@ function initialData() {
     angleChart: null,
     holdTypeChart: null,
     routeWorkChart: null,
-    climbType: "route",
+    climbType: "boulder",
     routeOnsight: null,
     boulderOnsight: null,
     dateFormat: 'MM/DD/YYYY',
@@ -125,25 +125,29 @@ var app = new Vue({
         {id: "undercling", statName: "UNDR", displayName: "Undercling", color: "#000"}
       ]
     },
-    routeWorkRoute: function() {
-      return [        
-		{id: "onsight", statName: "ONST", displayName: "On-sight", color: "#0face1"},
-        {id: "flash", statName: "FLSH", displayName: "Flash", color: "#e3cb29"},
-        {id: "2nd", statName: "2ND", displayName: "2nd try", color: "#aa231f"},
-		{id: "3+", statName: ">3", displayName: "More than 3 tries", color: "#fcea24"},
-      ]
+    routeWorks: function() {
+		if(app.climbType === 'route') {
+			return [        
+				{id: "onsight", statName: "ONST", displayName: "On-sight", color: "#0face1"},
+				{id: "flash", statName: "FLSH", displayName: "Flash", color: "#e3cb29"},
+				{id: "2nd", statName: "2ND", displayName: "2nd try", color: "#aa231f"},
+				{id: "3+", statName: "3+", displayName: "3 or more tries", color: "#fcea24"},
+			]
+		} else {
+			return [
+				{id: "flash", statName: "FLSH", displayName: "Flash", color: "#0face1"},
+				{id: "2nd", statName: "2ND", displayName: "2nd try", color: "#e3cb29"},
+				{id: "3rd", statName: "3RD", displayName: "3rd try", color: "#aa231f"},
+				{id: "3+", statName: "3+", displayName: "More than 3 tries", color: "#fcea24"},
+			]
+		}
     },
-    routeWorkBoulder: function() {
-		return [
-			{id: "flash", statName: "FLSH", displayName: "Flash", color: "#0face1"},
-			{id: "2nd", statName: "2ND", displayName: "2nd try", color: "#e3cb29"},
-			{id: "3rd", statName: "3RD", displayName: "3rd try", color: "#aa231f"},
-			{id: ">3", statName: ">3", displayName: "More than 3 tries", color: "#fcea24"},
-		]
-	},
     filterableGrades: function() {
       return this.db().distinct("grade").sort()
     },
+    filterableDates: function() {
+		return this.db().distinct('dateSent').sort()
+	},
     boulderGrades: function() {
       return generateHueco()
     },
@@ -203,8 +207,8 @@ var app = new Vue({
         app.$data = initialData()
       })
     },
-    onGradeFilterChange(e) {
-      app.calculateStats(e.target.value)
+    onFilterChange(e) {
+      app.calculateStats(document.getElementById("gradeStatSelector").value, document.getElementById("dateStatSelector").value)
     },
     changeMode: function(mode, e) {
       if (e) {
@@ -266,12 +270,21 @@ var app = new Vue({
         app.checkPyramidComplete()
 
         var gss = document.getElementById("gradeStatSelector")
-        if (gss) {
-          app.calculateStats(gss.value)
-        }
-        else {
-          app.calculateStats()
-        }
+        var dss = document.getElementById("dateStatSelector")
+        var arr = []
+        
+        if(gss) {arr.push(gss.value)} else {arr.push(null)}
+        if(dss) {arr.push(dss.value)}
+        
+        app.calculateStats.apply(null, arr)
+        
+        
+        //if (gss) {
+          //app.calculateStats(gss.value)
+        //}
+        //else {
+          //app.calculateStats()
+        //}
       })
       firebase.database().ref(".info/connected").on("value", function(snap) {
         if (snap.val() === true) {
@@ -353,7 +366,7 @@ var app = new Vue({
         })
       }
     },
-    calculateStat(stat, chartType, grade, showZeroes) {
+    calculateStat(stat, chartType, grade, date, showZeroes) {
       /**
         Stats follow these basic rules
         Define a stat (e.g. angle)
@@ -375,6 +388,9 @@ var app = new Vue({
         if (grade) {
           filter.grade = grade
         }
+        if (date) {
+			filter.dateSent = date
+		}
 
         var count = app.db(filter).count()
         if (count > 0 || showZeroes) {
@@ -429,12 +445,13 @@ var app = new Vue({
         }
       }
     },
-    calculateStats: function(grade) {
-      setTimeout(function(grade) {
-        app.calculateStat("angle", "bar", grade, true)
-        app.calculateStat("holdType", "bar", grade, true)
-        app.calculateStat("routeWork", "doughnut", grade)
-      }.bind(this, grade), 100)
+    calculateStats: function(grade, date) {
+      setTimeout(function(grade, date) {
+        app.calculateStat("angle", "bar", grade, date, true)
+        app.calculateStat("holdType", "bar", grade, date, true)
+        app.calculateStat("routeWork", "doughnut", grade, date)
+        
+      }.bind(this, grade,date), 100)
     },
     upgradePyramid: function() {
       //find highest grade in req

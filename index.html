@@ -129,7 +129,7 @@
             <div data-field-span="1">
               <label for="routeWork">Number of attempts</label>
               <select name="routeWork" id="routeWork">
-                <option v-for="work in ((climbType==='route') ? routeWorkRoute : routeWorkBoulder)" value="{{work.id}}">{{work.displayName}}</option>
+                <option v-for="work in routeWorks" value="{{work.id}}">{{work.displayName}}</option>
               </select>
             </div>
             <div data-field-span="1">
@@ -285,14 +285,14 @@
             <div data-row-span="1">
               <div data-field-span="1">
                 <label for="gradeStatSelector">Select a grade</label>
-                <select id="gradeStatSelector" v-on:change="onGradeFilterChange($event)">
+                <select id="gradeStatSelector" v-on:change="onFilterChange($event)">
                   <option value="">All grades</option>
                   <option v-for="grade in filterableGrades" value="{{grade}}">{{grade}}</option>
                 </select>
               </div>
               <div data-field-span="1">
 				  <label for="dateStatSelector">Select a date</label>
-				  <select id="dateStatSelector">
+				  <select id="dateStatSelector" v-on:change="onFilterChange($event)">
 					  <option value="">All dates</option>
 					  <option v-for="date in filterableDates" value="{{date}}">{{date}}</option>
 				  </select>
@@ -317,6 +317,7 @@
           <tr v-for="route in routes">
             <td>{{route.grade}}</td>
             <td class="progress">{{route.routeName}}</td>
+            <td class="progress">{{route.dateSent}}</td>
           </tr>
         </table>
       </div>
