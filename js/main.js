@@ -68,7 +68,7 @@ function initialData() {
     justRegistered: false,
     userId: null,
     mode: "loading",
-    grades: generateFrench(),
+    grades: generateHueco(),
     gradingSystem: null,
     requirements: [],
     db: TAFFY(),
@@ -366,7 +366,16 @@ var app = new Vue({
         })
       }
     },
-    calculateStat(stat, chartType, grade, date, showZeroes) {
+    getGradeChartData: function() {
+		gradeChartData = []
+
+		app.grades.forEach(function (val) {
+			gradeChartData.push({id: val, statName: val, displayName: val, color: "#363731"})
+		})
+		
+		return gradeChartData
+	},
+    calculateStat(stat, chartData, chartType, grade, date, showZeroes) {
       /**
         Stats follow these basic rules
         Define a stat (e.g. angle)
@@ -379,9 +388,8 @@ var app = new Vue({
       var ctx = document.getElementById(stat + "Chart")
       var data = []
       var options = {}
-
-      for (var i = 0; i < app[stat + "s"].length; i++) {
-        var curr = app[stat + "s"][i]
+      for (var i = 0; i < chartData.length; i++) {
+        var curr = chartData[i]
         var filter = {}
         filter[stat] = curr.id
 
@@ -447,10 +455,10 @@ var app = new Vue({
     },
     calculateStats: function(grade, date) {
       setTimeout(function(grade, date) {
-        app.calculateStat("angle", "bar", grade, date, true)
-        app.calculateStat("holdType", "bar", grade, date, true)
-        app.calculateStat("routeWork", "doughnut", grade, date)
-        
+        app.calculateStat("angle", app["angles"], "bar", grade, date, true)
+        app.calculateStat("holdType", app['holdTypes'], "bar", grade, date, true)
+        app.calculateStat("routeWork", app['routeWorks'], "doughnut", grade, date)
+        app.calculateStat("grade", app.getGradeChartData(), "bar", null, null, true)
       }.bind(this, grade,date), 100)
     },
     upgradePyramid: function() {
