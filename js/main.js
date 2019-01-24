@@ -366,11 +366,13 @@ var app = new Vue({
         })
       }
     },
-    getGradeChartData: function() {
+    getGradeChartData: function(grade) {
 		gradeChartData = []
 
 		app.grades.forEach(function (val) {
-			gradeChartData.push({id: val, statName: val, displayName: val, color: "#363731"})
+			if(!grade || val===grade) {
+				gradeChartData.push({id: val, statName: val, displayName: val, color: "#363731"})
+			}
 		})
 		
 		return gradeChartData
@@ -468,7 +470,6 @@ var app = new Vue({
 			}) - 1
 
 			if(gradeInt <= 0) {gradeInt = 1}
-			
 			vSum+= gradeInt
 		}
 
@@ -528,9 +529,9 @@ var app = new Vue({
         app.calculateStat("angle", app["angles"], "bar", grade, date, true)
         app.calculateStat("holdType", app['holdTypes'], "bar", grade, date, true)
         app.calculateStat("routeWork", app['routeWorks'], "doughnut", grade, date)
-        app.calculateStat("grade", app.getGradeChartData(), "bar", grade, date, true)
+        app.calculateStat("grade", app.getGradeChartData(grade), "bar", grade, date, true)
         if(app.climbType === 'boulder') {
-			app.calculateBoulderStats()
+			app.calculateBoulderStats(grade, date)
 		}
       }.bind(this, grade,date), 100)
     },
