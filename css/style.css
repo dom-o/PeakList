@@ -124,6 +124,11 @@ nav-bar .btn, .active {
 .mid.title {
   font-weight: 600;
 }
+.stat {
+	text-align: center;
+	font-size: 300%;
+	margin: 0;
+}
 .pyramid-container {
   position: relative;
 }

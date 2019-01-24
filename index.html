@@ -300,6 +300,18 @@
             </div>
           </fieldset>
         </div>
+        <p class="mid">ROUTES SENT</p>
+        <div class="canvas-container">
+			<canvas id="gradeChart"></canvas>
+        </div>
+        <div id="vStats" v-if="climbType==='boulder'">
+			<p class="mid">V SUM</p>
+				<p id="vSum" class="stat"></p>
+			<p class="mid">AVERAGE V</p>
+				<p id="vAvg" class="stat"></p>
+			<p class="mid">NUMBER OF CLIMBS</p>
+				<p id="numClimbs" class="stat"></p>
+        </div>
         <p class="mid">ANGLE</p>
         <div class="canvas-container">
           <canvas id="angleChart"></canvas>
@@ -312,10 +324,14 @@
         <div class="canvas-container">
           <canvas id="routeWorkChart"></canvas>
         </div>
+        <p class="mid title">ALL TIME STATS</p>
+        <div v-if="climbType==='boulder'">
+			<p class="mid">V-SUM vs AVERAGE V vs NUMBER OF CLIMBS</p>
+			<div class="canvas-container">
+				<canvas id="vSumChart"></canvas>
+			</div>
+		</div>
         <p class="mid">{{routes.length}} ROUTES SENT</p>
-        <div class="canvas-container">
-			<canvas id="gradeChart"></canvas>
-        </div>
         <table>
           <tr v-for="route in routes">
             <td>{{route.grade}}</td>

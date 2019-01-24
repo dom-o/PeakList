@@ -453,12 +453,85 @@ var app = new Vue({
         }
       }
     },
+    calculateVStats: function(date, grade) {
+		var filter = {}
+		var vSum = 0
+		var grades = generateHueco()
+		
+		if(date) { filter.dateSent = date }
+		if(grade) {filter.grade = grade}
+		
+		var data = app.db(filter).get()
+		for(var i=0; i<data.length; i++) {
+			gradeInt = grades.findIndex(function(element) {
+				return element === data[i].grade
+			}) - 1
+
+			if(gradeInt <= 0) {gradeInt = 1}
+			
+			vSum+= gradeInt
+		}
+
+		return {vSum:vSum, numClimbs: data.length, vAvg: (data.length===0 ? 0 : (vSum/data.length)) }
+	},
+	calculateBoulderStats: function(date, grade) {
+		var stats = ['vSum', 'vAvg', 'numClimbs']
+		var data = {
+			labels: [],
+			datasets: stats.map( (val,index) => {
+				return { 
+					label:val, 
+					data:[], 
+					borderColor:app.holdTypes[index].color,
+					fill: false 
+				}
+			})
+		}
+
+		for(var i=0; i<app.filterableDates.length; i++) {
+			if(app.filterableDates[i]) {
+				data.labels.push(app.filterableDates[i])
+
+				var vStats = app.calculateVStats(app.filterableDates[i])
+				for(j=0;j<stats.length;j++) {
+					data.datasets[j].data.push(vStats[stats[j]])
+				}
+			}
+		}
+		
+		vStats = app.calculateVStats(grade, date)
+		for(var i=0; i<stats.length; i++) {
+			p = document.getElementById(stats[i])
+			if(p) {
+				p.innerText = Math.round(vStats[stats[i]] * 100) / 100
+			}
+		}
+		
+		ctx = document.getElementById(stats[0]+'Chart')
+		
+		if(ctx) {
+			c = app[stats[0]+'Chart']
+			if(c) {
+				c.data = data
+				c.update()
+			} else {
+				app[stats[0]+'Chart'] = new Chart(ctx, {
+					type: 'line',
+					data: data,
+					options: {}
+				})
+			}
+		}
+	},
     calculateStats: function(grade, date) {
       setTimeout(function(grade, date) {
         app.calculateStat("angle", app["angles"], "bar", grade, date, true)
         app.calculateStat("holdType", app['holdTypes'], "bar", grade, date, true)
         app.calculateStat("routeWork", app['routeWorks'], "doughnut", grade, date)
-        app.calculateStat("grade", app.getGradeChartData(), "bar", null, null, true)
+        app.calculateStat("grade", app.getGradeChartData(), "bar", grade, date, true)
+        if(app.climbType === 'boulder') {
+			app.calculateBoulderStats()
+		}
       }.bind(this, grade,date), 100)
     },
     upgradePyramid: function() {
